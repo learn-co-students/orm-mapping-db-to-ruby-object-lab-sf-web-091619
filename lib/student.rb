@@ -1,4 +1,7 @@
 require 'pry'
+require 'sqlite3'
+DB = {:conn => SQLite3::Database.new("db/students.db")}
+
 class Student
   attr_accessor :id, :name, :grade
   
@@ -19,7 +22,6 @@ class Student
       WHERE students.grade = 9
     SQL
     #DB[:conn].execute(sql)
-    
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }
     
   end
@@ -108,3 +110,6 @@ class Student
     DB[:conn].execute(sql)
   end
 end
+
+binding.pry
+puts 'eof'
