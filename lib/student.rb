@@ -1,10 +1,6 @@
-require 'pry'
-require 'sqlite3'
-DB = {:conn => SQLite3::Database.new("db/students.db")}
-
 class Student
   attr_accessor :id, :name, :grade
-  
+
   def save
     sql = <<-SQL
       INSERT INTO students (name, grade) 
@@ -13,17 +9,13 @@ class Student
     DB[:conn].execute(sql, self.name, self.grade)
   end
 
-
-
   def self.all_students_in_grade_9
     sql = <<-SQL
       SELECT *
       FROM students
       WHERE students.grade = 9
     SQL
-    #DB[:conn].execute(sql)
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }
-    
   end
 
   def self.students_below_12th_grade
@@ -32,7 +24,6 @@ class Student
       FROM students
       WHERE students.grade < 12
     SQL
-    DB[:conn].execute(sql)
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }
   end
 
@@ -42,7 +33,6 @@ class Student
       WHERE students.grade = ?
       ORDER BY name ASC
     SQL
-    #DB[:conn].execute(sql, input)
     DB[:conn].execute(sql, input).map { |row| self.new_from_db(row) }
   end
 
@@ -50,9 +40,9 @@ class Student
     sql = <<-SQL
       SELECT * FROM students
       WHERE students.grade = 10
-      ORDER BY name ASC LIMIT ?
+      ORDER BY name 
+      ASC LIMIT ?
     SQL
-    #DB[:conn].execute(sql, input)
     DB[:conn].execute(sql, input).map { |row| self.new_from_db(row) }
   end
 
@@ -61,7 +51,6 @@ class Student
       SELECT * FROM students
       WHERE students.grade = 10
     SQL
-    DB[:conn].execute(sql)
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }.first ###
   end
 
@@ -74,11 +63,7 @@ class Student
   end
 
   def self.all
-    sql = <<-SQL
-      SELECT *
-      FROM students
-    SQL
-    DB[:conn].execute(sql)
+    sql = "SELECT * FROM students"
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }
   end
 
@@ -89,18 +74,16 @@ class Student
       WHERE name = ?
       LIMIT 1
     SQL
-    DB[:conn].execute(sql, name).map { |row| 
-      self.new_from_db(row)
-    }.first
+    DB[:conn].execute(sql, name).map { |row| self.new_from_db(row) }.first
   end
   
   def self.create_table
     sql = <<-SQL
-    CREATE TABLE IF NOT EXISTS students (
-      id INTEGER PRIMARY KEY,
-      name TEXT,
-      grade TEXT
-    )
+      CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        grade TEXT
+      )
     SQL
     DB[:conn].execute(sql)
   end
@@ -110,6 +93,3 @@ class Student
     DB[:conn].execute(sql)
   end
 end
-
-binding.pry
-puts 'eof'
