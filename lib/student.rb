@@ -10,21 +10,25 @@ class Student
     DB[:conn].execute(sql, self.name, self.grade)
   end
 
+
+
   def self.all_students_in_grade_9
     sql = <<-SQL
-    SELECT *
-    FROM students
-    WHERE students.grade = 9
+      SELECT *
+      FROM students
+      WHERE students.grade = 9
     SQL
-    DB[:conn].execute(sql)
+    #DB[:conn].execute(sql)
+    
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }
+    
   end
 
   def self.students_below_12th_grade
     sql = <<-SQL
-    SELECT *
-    FROM students
-    WHERE students.grade < 12
+      SELECT *
+      FROM students
+      WHERE students.grade < 12
     SQL
     DB[:conn].execute(sql)
     DB[:conn].execute(sql).map { |row| self.new_from_db(row) }
@@ -32,38 +36,31 @@ class Student
 
   def self.all_students_in_grade_X(input)
     sql = <<-SQL
-    SELECT * FROM students
-    WHERE students.grade = ?
-    ORDER BY name ASC
+      SELECT * FROM students
+      WHERE students.grade = ?
+      ORDER BY name ASC
     SQL
-    DB[:conn].execute(sql, input)
+    #DB[:conn].execute(sql, input)
     DB[:conn].execute(sql, input).map { |row| self.new_from_db(row) }
   end
 
   def self.first_X_students_in_grade_10(input)
     sql = <<-SQL
-    SELECT * FROM students
-    WHERE students.grade = 10
-    ORDER BY name ASC LIMIT ?
+      SELECT * FROM students
+      WHERE students.grade = 10
+      ORDER BY name ASC LIMIT ?
     SQL
-    DB[:conn].execute(sql, input)
+    #DB[:conn].execute(sql, input)
     DB[:conn].execute(sql, input).map { |row| self.new_from_db(row) }
   end
 
-  def self.first_student_in_grade_10 ###############   THIS WAS THE ONE FOR DAIEZZZZZ #####################
-    #binding.pry
+  def self.first_student_in_grade_10 ###
     sql = <<-SQL
-    SELECT * FROM students
-    WHERE students.grade = 10
-    ORDER BY students.id ASC LIMIT 1
+      SELECT * FROM students
+      WHERE students.grade = 10
     SQL
     DB[:conn].execute(sql)
-    #binding.pry 
-    DB[:conn].execute(sql).map { |row| 
-      self.new_from_db(row)
-      #binding.pry 
-    }.first
-    #binding.pry
+    DB[:conn].execute(sql).map { |row| self.new_from_db(row) }.first ###
   end
 
   def self.new_from_db(row)
@@ -90,7 +87,9 @@ class Student
       WHERE name = ?
       LIMIT 1
     SQL
-    DB[:conn].execute(sql, name).map { |row| self.new_from_db(row) }.first
+    DB[:conn].execute(sql, name).map { |row| 
+      self.new_from_db(row)
+    }.first
   end
   
   def self.create_table
